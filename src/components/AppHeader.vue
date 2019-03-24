@@ -2,10 +2,6 @@
 <div>
   <v-toolbar dark color="primary">
     <h1>ФГБУ ЦСМС</h1>
-    <v-spacer></v-spacer>
-    <v-btn icon>
-      <v-icon>refresh</v-icon>
-    </v-btn>
   </v-toolbar>
 </div>
 </template>

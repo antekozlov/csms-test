@@ -2,30 +2,40 @@
 <div>
   <h1 class="text-xs-center">{{tableProps.H1Content}}</h1>
   <h2>{{tableProps.TableName}}</h2>
-  <table>
-    <tr>
-      <td v-for="(item, index) in colsOrder" :key="item">
-        <span @click="move(index, -1)">&#8592; </span>
-        {{tableProps.ColsTypes[item]}}
-        <span @click="move(index, 1)"> &#8594;</span>
-      </td>
-    </tr>
-    <tr v-for="(cols, colsIndex) in tableProps.Data">
-      <td v-for="item in colsOrder" @dblclick="editItem(colsIndex, item)">
-        <span class="unselected-item" v-if="!(editedItem.index === colsIndex && editedItem.itemName === item)">
-          {{cols[item]}}
-        </span>
-        <span v-else>
-          <input type="text" v-model="selectedItem" id="selected-item" @keyup.enter="setSelectedItem">
-        </span>
-      </td>
-    </tr>
-  </table>
-  <a :href="href" :download="download" v-if="showLink">
+  <div class="scroll-wrapper">
+    <table>
+      <tr>
+        <th v-for="(item, index) in colsOrder" :key="item" class="text-center">
+          <div class="icon-wrap">
+            <v-icon @click="move(index, -1)" class="icon-move">navigate_before</v-icon>
+            <v-icon @click="move(index, 1)" class="icon-move">navigate_next</v-icon>
+          </div>
+          {{tableProps.ColsTitles[item]}}
+        </th>
+      </tr>
+      <tr v-for="(cols, colsIndex) in tableProps.Data">
+        <td v-for="item in colsOrder" @dblclick="editItem(colsIndex, item)" class="table-data text-center">
+          <span class="unselected-item" v-if="!(editedItem.index === colsIndex && editedItem.itemName === item)">
+            {{cols[item]}}
+          </span>
+          <span v-else>
+            <input type="text" v-model="selectedItem" id="selected-item" @keyup.enter="setSelectedItem">
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- <a :href="href" :download="download" v-if="showLink">
     Скачать файл
-  </a>
+  </a> -->
 </div>
 </template>
+
+
+<script>
+export default {}
+</script>
 
 <script>
 import {
@@ -108,18 +118,53 @@ export default {
 <style scoped lang="scss">
 table {
     border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 1px -1px rgba(0,0,0,0.2), 0 1px 1px 0 rgba(0,0,0,0.14), 0 1px 3px 0 rgba(0,0,0,0.12) !important;
+
+    td,
+    th {
+        width: 150px;
+    }
+    tr:nth-child(even) {
+        background-color: #eeeeee;
+    }
 }
 
-td {
-    width: 150px;
-    border: 1px solid black;
+td,
+th {
     padding: 5px;
 }
 
+th {
+    height: 75px;
+}
+
+#selected-item:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px #1976d2;
+}
+
+.icon-move {
+    font-size: 15px;
+}
 .unselected-item {
     user-select: none;
 }
 h2 {
     margin-bottom: 15px;
+}
+.icon-wrap {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+.text-center {
+    text-align: center;
+}
+.scroll-wrapper {
+    overflow: scroll;
+}
+.table-data {
+    font-size: 12px;
 }
 </style>
