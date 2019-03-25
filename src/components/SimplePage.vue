@@ -26,10 +26,6 @@
     </table>
   </div>
 
-  <!-- <a :href="href" :download="download" v-if="showLink">
-    Скачать файл
-  </a> -->
-
   <v-btn color="blue-grey btn-download" class="white--text" :href="href" :download="download" v-if="showLink">
     Скачать
     <v-icon right dark>get_app</v-icon>
@@ -39,15 +35,11 @@
 
 
 <script>
-export default {}
-</script>
-
-<script>
 import {
   mapState
 } from 'vuex';
 
-const name = 'myfile.json';
+const name = 'myfile.json'; // имя файла, куда будет записываться измененный json
 
 export default {
   props: ['tableProps'],
@@ -61,51 +53,51 @@ export default {
     }
   },
   created() {
-    document.title = this.tableProps.PageTitle;
-    const sortCols = (a, b) => {
+    document.title = this.tableProps.PageTitle; // меняем заголовок title
+    const sortCols = (a, b) => { // функция для фильтрации tableProps
       if (this.tableProps.ColsOrder[a] > this.tableProps.ColsOrder[b]) return 1;
       if (this.tableProps.ColsOrder[a] < this.tableProps.ColsOrder[b]) return -1;
     };
-    const colsOrder = Object.keys(this.tableProps.ColsOrder)
-      .sort(sortCols)
-      .filter(item => this.tableProps.ColsShow[item] === 1);
-    this.$store.commit('setColsOrder', colsOrder);
+    const colsOrder = Object.keys(this.tableProps.ColsOrder) // берем ключи из ColsOrder (там порядок отображения и он для нас будет ключевым)
+      .sort(sortCols) // сортируем
+      .filter(item => this.tableProps.ColsShow[item] === 1); // фильтруем
+    this.$store.commit('setColsOrder', colsOrder); // записываем в store
   },
   methods: {
-    move(index, shift) {
-      const colsOrder = [...this.colsOrder];
-      const currentItem = colsOrder[index];
-      if (colsOrder[index + shift]) {
+    move(index, shift) { // метод для перемещения столбцов
+      const colsOrder = [...this.colsOrder]; // копируем текущий объект (иммутабельность)
+      const currentItem = colsOrder[index]; // запоминаем текущий
+      if (colsOrder[index + shift]) { // проверяем пограничные условия
         const shiftedItem = colsOrder[index + shift];
         colsOrder[index] = shiftedItem;
         colsOrder[index + shift] = currentItem;
-        this.$store.commit('setColsOrder', colsOrder);
+        this.$store.commit('setColsOrder', colsOrder); // записываем результат в стор
       }
     },
-    editItem(index, itemName) {
+    editItem(index, itemName) { // редактирование содержимого ячейки
       this.editedItem = {
         index,
         itemName
-      };
-      this.selectedItem = this.tableProps.Data[index][itemName];
+      }; // координаты текущей ячейки
+      this.selectedItem = this.tableProps.Data[index][itemName]; // редактируемое значение
       setTimeout(() => {
         const el = document.getElementById('selected-item');
-        if (el) {
+        if (el) { // фокусим в инпуте. setTimeOut нужен для того, чтобы успел отрисоваться инпут
           el.focus();
         }
       }, 0);
     },
-    setSelectedItem() {
+    setSelectedItem() { // записываем изменения в ячейке
       this.$store.commit('setSelectedItem', {
         editedItem: this.editedItem,
         selectedItem: this.selectedItem
       });
-      this.editedItem = {};
-      this.selectedItem = '';
-      this.createJSON();
-      this.showLink = true;
+      this.editedItem = {}; // обнуляем выбор ячейки
+      this.selectedItem = ''; // и редактируемое значение
+      this.createJSON(); // создаем json
+      this.showLink = true; // показываем кнопку загрузки json
     },
-    createJSON() {
+    createJSON() { // создаем json
       const file = new Blob([JSON.stringify(this.$store.state.data)], {
         type: 'text/json'
       });
@@ -113,7 +105,7 @@ export default {
       this.download = name;
     }
   },
-  computed: mapState({
+  computed: mapState({ // подтягиваем из стора объект
     colsOrder: state => state.colsOrder,
   }),
 }
@@ -134,16 +126,13 @@ table {
         background-color: #eeeeee;
     }
 }
-
 td,
 th {
     padding: 5px;
 }
-
 th {
     height: 75px;
 }
-
 #selected-item:focus {
     outline: none;
     box-shadow: 0 0 0 1px #1976d2;
@@ -154,6 +143,10 @@ th {
 }
 .unselected-item {
     user-select: none;
+}
+h1 {
+    margin-top: 30px;
+    margin-bottom: 15px;
 }
 h2 {
     margin-bottom: 15px;
