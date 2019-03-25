@@ -19,7 +19,7 @@
             {{cols[item]}}
           </span>
           <span v-else>
-            <input type="text" v-model="selectedItem" id="selected-item" @keyup.enter="setSelectedItem">
+            <input type="text" v-model="selectedItem" id="selected-item" @keyup.enter="setSelectedItem" @blur="setSelectedItem">
           </span>
         </td>
       </tr>
@@ -29,6 +29,11 @@
   <!-- <a :href="href" :download="download" v-if="showLink">
     Скачать файл
   </a> -->
+
+  <v-btn color="blue-grey btn-download" class="white--text" :href="href" :download="download" v-if="showLink">
+    Скачать
+    <v-icon right dark>get_app</v-icon>
+  </v-btn>
 </div>
 </template>
 
@@ -166,5 +171,8 @@ h2 {
 }
 .table-data {
     font-size: 12px;
+}
+.btn-download {
+    margin-top: 30px;
 }
 </style>
